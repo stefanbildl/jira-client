@@ -1,6 +1,16 @@
 # A Simple Jira Rest Client 
 
+
+
+This Jira client is still under development. 
+As of now, it only allows creating issues.
+If you want to contribute, please let me know.
+
+The client uses retrofit2 and jackson.
+
 ## Usage
+
+
 
 ```java
 try {
@@ -11,9 +21,6 @@ try {
     System.out.println("== Projects ==");
     for(Project project: projects)
         System.out.println(project.getName() + " (" + project.getKey() + ")");
-
-
-
 
     // get a project with a given key
     Project project = Project.get(client, "TEST");
