@@ -1,0 +1,75 @@
+package jiraclient;
+
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Response;
+import retrofit2.http.Body;
+import retrofit2.http.POST;
+
+import java.io.IOException;
+import java.util.HashMap;
+
+public class Issue {
+    private HashMap<String, Object> fields;
+
+    public HashMap<String, Object> getFields() {
+        return fields;
+    }
+
+    public void setFields(HashMap<String, Object> fields) {
+        this.fields = fields;
+    }
+
+
+    public static class Builder {
+        private HashMap<String, Object> fields = new HashMap<>();
+
+        public Builder(Project project) {
+            HashMap<String, String> projectMap = new HashMap<>();
+            projectMap.put("id", String.valueOf(project.getId()));
+            fields.put("project", projectMap);
+        }
+
+        public Builder(int id) {
+            HashMap<String, String> projectMap = new HashMap<>();
+            projectMap.put("id", String.valueOf(id));
+            fields.put("project", projectMap);
+        }
+
+        public Builder summary(final String summary) {
+            fields.put("summary", summary);
+            return this;
+        }
+
+        public Builder description(final String description) {
+            fields.put("description", description);
+            return this;
+        }
+
+        public Builder customField(final String key, final Object value) {
+            fields.put(key, value);
+            return this;
+        }
+
+        public Builder issueType(int id) {
+            HashMap<String, String> issueTypeMap = new HashMap<>();
+            issueTypeMap.put("id", String.valueOf(id));
+            fields.put("issuetype", issueTypeMap);
+            return this;
+        }
+
+        public Issue build() {
+            final Issue issue = new Issue();
+            issue.setFields(fields);
+            return issue;
+        }
+    }
+
+    public void save(JiraClient client) throws IOException {
+        Response<ResponseBody> response = client.issueInterface.createIssue(this).execute();
+        if (response.isSuccessful())
+            return;
+        else throw new IOException(response.errorBody().string());
+    }
+}
