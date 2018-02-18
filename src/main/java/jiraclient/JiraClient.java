@@ -3,6 +3,7 @@ package jiraclient;
 import jiraclient.rest.BasicAuthRetrofitProvider;
 import jiraclient.rest.RetrofitProvider;
 import jiraclient.rest.interfaces.IssueInterface;
+import jiraclient.rest.interfaces.IssueTypeInterface;
 import jiraclient.rest.interfaces.PriorityInterface;
 import jiraclient.rest.interfaces.ProjectInterface;
 import retrofit2.Retrofit;
@@ -16,12 +17,14 @@ public class JiraClient {
     final PriorityInterface priorityInterface;
     final ProjectInterface projectInterface;
     final IssueInterface issueInterface;
+    final IssueTypeInterface issueTypeInterface;
 
-    private JiraClient(RetrofitProvider retrofitProvider) {
+    public JiraClient(RetrofitProvider retrofitProvider) {
         this.retrofit = retrofitProvider.getRetrofit();
         priorityInterface = retrofit.create(PriorityInterface.class);
         projectInterface = retrofit.create(ProjectInterface.class);
         issueInterface = retrofit.create(IssueInterface.class);
+        issueTypeInterface = retrofit.create(IssueTypeInterface.class);
     }
 
     public static JiraClient getBasicAuthInstance(final String baseUrl, final String username, final String password) throws URISyntaxException, MalformedURLException {

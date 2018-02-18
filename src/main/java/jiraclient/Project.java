@@ -1,5 +1,6 @@
 package jiraclient;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jiraclient.rest.interfaces.ProjectInterface;
 import retrofit2.Response;
 
@@ -7,10 +8,20 @@ import java.io.IOException;
 import java.util.List;
 import java.util.TreeMap;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Project {
-    private String expand, self, key, name, projectTypeKey;
+    private String expand, self, key, name, projectTypeKey, assigneeType, description;
     private int id;
     private TreeMap<String, String> avatarUrls;
+    private List<IssueType> issueTypes;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public String getExpand() {
         return expand;
@@ -68,6 +79,22 @@ public class Project {
         this.avatarUrls = avatarUrls;
     }
 
+    public String getAssigneeType() {
+        return assigneeType;
+    }
+
+    public void setAssigneeType(String assigneeType) {
+        this.assigneeType = assigneeType;
+    }
+
+    public List<IssueType> getIssueTypes() {
+        return issueTypes;
+    }
+
+    public void setIssueTypes(List<IssueType> issueTypes) {
+        this.issueTypes = issueTypes;
+    }
+
     @Override
     public String toString() {
         return "Project{" +
@@ -96,10 +123,35 @@ public class Project {
         return id;
     }
 
-    public static List<Project> getAllProjects(JiraClient client) throws IOException {
+    public static List<Project> allProjects(JiraClient client) throws IOException {
         Response<List<Project>> response = client.projectInterface.getProjects().execute();
         if(response.isSuccessful())
             return response.body();
         throw new IOException(response.errorBody().string());
     }
+
+    public static Project get(JiraClient client, int projectId) throws IOException {
+        Response<Project> response = client.projectInterface.getProjectByKey(String.valueOf(projectId)).execute();
+        if(response.isSuccessful())
+            return response.body();
+        throw new IOException(response.errorBody().string());
+    }
+
+    public static Project get(JiraClient client, String projectKey) throws IOException {
+        Response<Project> response = client.projectInterface.getProjectByKey(projectKey).execute();
+        if(response.isSuccessful())
+            return response.body();
+        throw new IOException(response.errorBody().string());
+    }
+
+
+    public IssueType getIssueType(String name) {
+        for(IssueType type: issueTypes) {
+            if(type.getName().trim().equalsIgnoreCase(name.trim()))
+                return type;
+        }
+        return null;
+    }
+
 }
+

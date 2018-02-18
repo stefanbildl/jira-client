@@ -1,15 +1,14 @@
 package jiraclient;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
 import retrofit2.Response;
-import retrofit2.http.Body;
-import retrofit2.http.POST;
 
 import java.io.IOException;
 import java.util.HashMap;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Issue {
     private HashMap<String, Object> fields;
 
@@ -56,6 +55,26 @@ public class Issue {
             HashMap<String, String> issueTypeMap = new HashMap<>();
             issueTypeMap.put("id", String.valueOf(id));
             fields.put("issuetype", issueTypeMap);
+            return this;
+        }
+
+        public Builder issueType(IssueType issueType) {
+            HashMap<String, String> issueTypeMap = new HashMap<>();
+            issueTypeMap.put("id", String.valueOf(issueType.getId()));
+            fields.put("issuetype", issueTypeMap);
+            return this;
+        }
+        public Builder priority(int priority) {
+            HashMap<String, String> prioMap = new HashMap<>();
+            prioMap.put("id", String.valueOf(priority));
+            fields.put("priority", prioMap);
+            return this;
+        }
+
+        public Builder priority(Priority priority) {
+            HashMap<String, String> prioMap = new HashMap<>();
+            prioMap.put("id", String.valueOf(priority.getId()));
+            fields.put("priority", prioMap);
             return this;
         }
 

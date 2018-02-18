@@ -1,10 +1,16 @@
 package jiraclient;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import retrofit2.Response;
+
+import java.io.IOException;
+import java.util.List;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class IssueType {
     private int id;
     private String self, description, iconUrl, name;
     private boolean subtask;
-
 
     public int getId() {
         return id;
@@ -81,6 +87,20 @@ public class IssueType {
                 '}';
     }
 
-    
+
+    public static List<IssueType> all(JiraClient client) throws IOException {
+        Response<List<IssueType>> response = client.issueTypeInterface.getIssueTypes().execute();
+        if(response.isSuccessful())
+            return response.body();
+        throw new IOException(response.errorBody().string());
+    }
+
+    public static IssueType get(JiraClient client, String key) throws IOException {
+        Response<IssueType> response = client.issueTypeInterface.getIssueType(key).execute();
+        if(response.isSuccessful())
+            return response.body();
+        throw new IOException(response.errorBody().string());
+    }
+
 
 }

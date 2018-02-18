@@ -1,11 +1,13 @@
 package jiraclient;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jiraclient.rest.interfaces.PriorityInterface;
 import retrofit2.Response;
 
 import java.io.IOException;
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Priority {
     private String statusColor, description, name, self, iconUrl;
     private int id;
@@ -82,8 +84,6 @@ public class Priority {
         this.iconUrl = iconUrl;
     }
 
-
-
     public static List<Priority> getPriorityLevels(JiraClient client) throws IOException {
         Response<List<Priority>> response = client.priorityInterface.getPriorities().execute();
         if(response.isSuccessful())
@@ -91,6 +91,18 @@ public class Priority {
         throw new IOException(response.errorBody().string());
     }
 
+    public static Priority getPriority(JiraClient client, int id) throws IOException {
+        Response<Priority> response = client.priorityInterface.getPriority(id).execute();
+        if(response.isSuccessful())
+            return response.body();
+        throw new IOException(response.errorBody().string());
+    }
+
+    public static final int HIGHEST = 1;
+    public static final int HIGH = 2;
+    public static final int MEDIUM = 3;
+    public static final int LOW = 4;
+    public static final int LOWEST = 5;
 }
 
 
